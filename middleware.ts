@@ -3,14 +3,14 @@ import { clerkMiddleware,createRouteMatcher } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 //isPublic(req) will return true if path matches 
 const isPublicRoute=createRouteMatcher([
-    '/signup',
-    '/signin',
+    '/sign-up',
+    '/sign-in',
     '/',
     '/home'
 ])
 
 const isPublicApiRoute=createRouteMatcher([
-    '/api/videos'
+    '/api/video'
 ])
 //clerk middleware is used to have custome made redirections
 export default clerkMiddleware(async(auth,req)=>{
@@ -26,14 +26,15 @@ export default clerkMiddleware(async(auth,req)=>{
    //if not logged in
    if(!userId){
     if(!isPublicApiRoute(req) && !isPublicRoute(req)){
-        return NextResponse.redirect(new URL('/signin',req.url));
+        return NextResponse.redirect(new URL('/sign-in',req.url));
         //this will craete new url using the current request base url
     }
-        if(isApiRequest && !isPublicRoute(req)){
-            return NextResponse.redirect(new URL('/signin',req.url));
+        if(isApiRequest && !isPublicApiRoute(req)){
+            return NextResponse.redirect(new URL('/sign-in',req.url));
         }
     
    }
+   return NextResponse.next()
 });
 export const config = {
   matcher: [
