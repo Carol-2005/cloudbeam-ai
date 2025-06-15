@@ -62,7 +62,18 @@ export async function POST(request:NextRequest){
                 status:401
             })
          }
-
+         if(
+            !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+            !process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || 
+            !process.env.CLOUDINARY_API_SECRET 
+           ){
+           return NextResponse.json({
+            error:"Credentials not found"
+           },{
+            status:500
+           })
+           }
+        
          try {
             console.log("The req is,req");
             

@@ -1,3 +1,4 @@
+//what i learnt is that there are two ways of perorminga  preview onw in lcal with new FileReader() and the other is using cloudinary public Id
 'use client'
 import React,{useState,useEffect,useRef} from 'react'
 import { CldImage } from 'next-cloudinary';
@@ -23,11 +24,16 @@ export default function Social() {
     },[selectedFormat,uploadedImage])
 
     const handleFileUpload=async(e:React.ChangeEvent<HTMLInputElement>)=>{
+        setIsUploading(true);
       const file=e.target.files?.[0];
+      console.log("The file is",file);
+      
       if(!file)return;  
       const formData=new FormData();
       formData.append('file',file);
       try {
+        console.log("The function is hit");
+        
         const response=await fetch('/api/image-upload',{
           method:'POST',
           body:formData
@@ -36,6 +42,8 @@ export default function Social() {
 
         const data=await response.json();
         setUploadedImage(data.publicId);
+        console.log("The publicid is",data.publicId);
+        
       } catch (error) {
         console.log(error)
             alert("Failed to upload image");
@@ -59,7 +67,7 @@ export default function Social() {
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-      document.body.removeChild(link);
+      
      })
     }
   return (
