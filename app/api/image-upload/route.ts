@@ -5,9 +5,9 @@ import { auth } from '@clerk/nextjs/server';
 
 // Configuration
 cloudinary.config({ 
-    cloud_name: process.env.cloud_name, 
-    api_key: process.env.api_key, 
-    api_secret: process.env.api_secret // Click 'View API Keys' above to copy your API secret
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
 });
 // (async function() {
 
@@ -89,7 +89,7 @@ export async function POST(request:NextRequest){
                 uploadStream.end(buffer);
             })
             return NextResponse.json({
-                publicIdsss:result.public_id
+                publicId:result.public_id
 
             },{status:200})
            
