@@ -5,15 +5,15 @@ import { PrismaClient } from "@prisma/client";
 const prisma=new PrismaClient();
 
 cloudinary.config({ 
-    cloud_name: process.env.CLOUD_NAME, 
-    api_key: process.env.API_KEY, 
-    api_secret: process.env.API_SECRET // Click 'View API Keys' above to copy your API secret
+    cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, 
+    api_key: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY, 
+    api_secret: process.env.CLOUDINARY_API_SECRET // Click 'View API Keys' above to copy your API secret
 });
 
 interface CloudinaryUploadResult{
     public_id:string;
     bytes:number;
-    duration?:string;
+    duration?:number;
     [key:string]:any
 }
 
@@ -26,9 +26,9 @@ export async function POST(request:NextRequest){
    }
 
    if(
-    ! process.env.CLOUD_NAME ||
-    !process.env.API_KEY ||
-    !process.env.API_SECRET
+    !process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME ||
+    !process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY || 
+    !process.env.CLOUDINARY_API_SECRET 
    ){
    return NextResponse.json({
     error:"Credentials not found"
@@ -53,11 +53,14 @@ export async function POST(request:NextRequest){
     const result=await new Promise<CloudinaryUploadResult>((resolve,reject)=>{
        const uploadStream=cloudinary.uploader.upload_stream(
         {
-            resource_type:"videos",
+            resource_type:"video",
             folder:"video-uploads",
             transformation:[
+                {
                 quality:"auto",
                 fetch_format:"mp4"
+                }
+              
             ]
         },
             
@@ -79,12 +82,18 @@ export async function POST(request:NextRequest){
         }
     })
     return NextResponse.json(
-        video)
+        {   video:video,
+            message:"Video uploaded"
+        },{
+         
+            status:200,
+        }
+        )
 
    } catch (error) {
     console.log("Upload Image failed");
     return NextResponse.json({
-        error:"Uplaod image failed"
+        error:"Uplaod video failed"
     },{
         status:500
     })
