@@ -17,10 +17,11 @@ datasource db {
 model Video{
   id String @id @default(cuid()) //id is the primary key and cuid default will tell to genertae  a uniqe identifier if non is provided
   titleName String
+  description String?
   publicId String
   originalSize String
   compressedSize String
-  duration String
+  duration Float
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
