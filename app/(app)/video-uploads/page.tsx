@@ -1,10 +1,11 @@
+'use client';
 import React,{useState,useEffect} from "react";
 import axios from 'axios';
 import { useRouter } from "next/navigation";
-import { useToast } from "../../../hooks/useToast";
+// import { useToast } from "../../../hooks/useToast";
 
 function VideoUpload(){
-    const { toast } = useToast();
+    // const { toast } = useToast();
     const [file,setFile]=useState<File | null>(null);
     const [title,setTitle]=useState("");
     const [description,setDescription]=useState("");
@@ -12,19 +13,19 @@ function VideoUpload(){
 
     const router=useRouter();
 
-    const MAX_FILE_SIZE=70*1024*1024; //70MB
+    const MAX_FILE_SIZE=100*1024*1024; //70MB
 
     const handleSubmit=async(event:React.FormEvent)=>{
         event.preventDefault();
         if(!file) return;
 
         if(file.size > MAX_FILE_SIZE){
-            toast({
-                title:"Error",
-                description:"File Size greater.",
-                variant:"destructive",
-                duration:3000
-            })
+            // toast({
+            //     title:"Error",
+            //     description:"File Size greater.",
+            //     variant:"destructive",
+            //     duration:3000
+            // })
             return;
         }
      setIsUploading(true);
@@ -35,20 +36,21 @@ function VideoUpload(){
     formData.append("originalSize",file.size.toString());
 
     try {
-       const response= await axios.post('/api/vide-upload',formData);
+       const response= await axios.post('/api/video-upload',formData);
        console.log("The response in video is",response);
        
         //check for 200 response
         const result=response.data;
     if(result.status==200){
-        toast({
-           title:'success',
-           description:'Video uploaded successfully',
-           variant:'default',
-           duration:3000
+        alert('Video has been uploaded');
+        // toast({
+        //    title:'success',
+        //    description:'Video uploaded successfully',
+        //    variant:'default',
+        //    duration:3000
+        router.push('/');
 
-
-        })
+        // })
     }
         
     } catch (error) {

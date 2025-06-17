@@ -18,11 +18,19 @@ export default clerkMiddleware(async(auth,req)=>{
    //req.url---https://localhost:3000/home
    const currentUrl=new URL(req.url);
    const isHomePage=currentUrl.pathname==='/home';
+   const isLandingPage=currentUrl.pathname==='/';
+   const isSignIn=currentUrl.pathname==='/sign-in';
+   const isSignUp=currentUrl.pathname==='/sign-up';
    const isApiRequest=currentUrl.pathname.startsWith('/api');
-
-   if(userId  && isPublicRoute(req) && !isHomePage){
+   if(userId && isSignIn || isSignUp ){
     return NextResponse.redirect(new URL('/home',req.url))
    }
+//    if(userId && isSignUp  ){
+//     return NextResponse.redirect(new URL('/',req.url))
+//    }
+//    if(userId  &&  && !isHomePage){
+//     return NextResponse.redirect(new URL('/home',req.url))
+//    }
    //if not logged in
    if(!userId){
     if(!isPublicApiRoute(req) && !isPublicRoute(req)){
