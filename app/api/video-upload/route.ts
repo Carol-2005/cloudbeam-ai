@@ -1,5 +1,5 @@
 import { NextRequest,NextResponse } from "next/server";
-import { v2 as cloudinary, UploadStream ,UploadApiResponse} from 'cloudinary';
+import { v2 as cloudinary,UploadApiResponse} from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
 import { PrismaClient } from "@prisma/client";
 const prisma=new PrismaClient();
@@ -50,53 +50,35 @@ export async function POST(request:NextRequest){
     }
       const bytes=await file.arrayBuffer();
       const buffer=Buffer.from(bytes);
-    // const result=await new Promise<CloudinaryUploadResult>((resolve,reject)=>{
-    //    const uploadStream=cloudinary.uploader.upload_stream(
-    //     {
-    //         resource_type:"video",
-    //         folder:"video-uploads",
-    //         transformation:[
-    //             {
-    //             quality:"auto",
-    //             fetch_format:"mp4"
-    //             }
-              
-    //         ]
-    //     },
-            
-    //     (error,result)=>{
-    //         if(error) reject(error)
-    //             else resolve(result as CloudinaryUploadResult)
-    //     }
-    //    )
-    //    uploadStream.end(buffer);
-    // })
     const result = await new Promise<UploadApiResponse>((resolve, reject) => {
-        const uploadStream = cloudinary.uploader.upload_stream(
-          {
-            resource_type: "video",
-            folder: "video-uploads",
-            chunk_size: 6000000, // 6MB chunks
-            eager: [
-              {
-                width: 1920,
-                height: 1080,
-                crop: "fill",
-                format: "mp4",
-                quality: "auto"
-              }
-            ],
-            eager_async: true
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result as UploadApiResponse);
-          }
-        );
-      
-        uploadStream.end(buffer); // send the buffer into the stream
-      });
-      
+       const uploadStream=cloudinary.uploader.upload_stream(
+        {
+            resource_type:"video",
+            folder:"video-uploads",
+            transformation:[      //transformations replave the original with the compressed one directly to parallel urls to deal with
+                {
+                quality:"auto",
+                fetch_format:"mp4"
+                }
+              
+            ]
+        },
+            
+        (error,result)=>{
+            if(error) reject(error)
+                else resolve(result as UploadApiResponse)
+        }
+       )
+       uploadStream.end(buffer);
+    })
+    
+       
+         
+     
+      console.log("The result is",result);
+     // console.log("eager thingy is",result.eager[0].secure_url);
+     
+     
     const video=await prisma.video.create({
         data:{
             titleName,
@@ -104,6 +86,7 @@ export async function POST(request:NextRequest){
             publicId:result.public_id,
             originalSize:originalSize,
             compressedSize:String(result.bytes),
+          
             duration:result.duration ||0
         }
     })
