@@ -150,7 +150,7 @@ export default function Home() {
               <div className="space-y-6">
                 <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
                   <span className="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
-                    Brands that don't just deliver —{' '}
+                  Brands that don&apos;t just deliver —
                   </span>
                   <span className="bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                     they empower
