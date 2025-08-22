@@ -1,5 +1,5 @@
 import { NextRequest,NextResponse } from 'next/server';
-import { v2 as cloudinary, UploadStream } from 'cloudinary';
+import { v2 as cloudinary} from 'cloudinary';
 import { auth } from '@clerk/nextjs/server';
 
 
@@ -106,6 +106,8 @@ export async function POST(request:NextRequest){
            
          } catch (error) {
             console.log("Upload Image failed");
+            console.log(error);
+            
             return NextResponse.json({
                 error:"Uplaod image failed"
             },{

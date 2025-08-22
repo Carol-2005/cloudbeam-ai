@@ -114,7 +114,7 @@ function Home() {
     } catch (error:any) {
       console.error("Failed to fetch videos:", error);
       
-      let errorMessage = "Failed to fetch videos";
+      const errorMessage = "Failed to fetch videos";
       // if (axios.isAxiosError(error)) {
       //   if (error.code === 'ECONNABORTED') {
       //     errorMessage = "Request timeout - please try again";

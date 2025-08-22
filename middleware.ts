@@ -17,8 +17,8 @@ export default clerkMiddleware(async(auth,req)=>{
    const {userId}=await auth();
    //req.url---https://localhost:3000/home
    const currentUrl=new URL(req.url);
-   const isHomePage=currentUrl.pathname==='/home';
-   const isLandingPage=currentUrl.pathname==='/';
+//    const isHomePage=currentUrl.pathname==='/home';
+//    const isLandingPage=currentUrl.pathname==='/';
    const isSignIn=currentUrl.pathname==='/sign-in';
    const isSignUp=currentUrl.pathname==='/sign-up';
    const isApiRequest=currentUrl.pathname.startsWith('/api');

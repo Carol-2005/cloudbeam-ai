@@ -13,6 +13,8 @@ cloudinary.config({
 });
 
 export async function POST(request: NextRequest) {
+    console.log(request);
+    
     const { userId } = await auth();
     
     if (!userId) {
@@ -50,7 +52,7 @@ export async function POST(request: NextRequest) {
         
         console.log("Cloudinary resource eager status:", resource.eager);
 
-        let compressionStatus = {
+        const compressionStatus = {
             isProcessing: true,
             compressedSize: video.compressedSize,
             originalSize: video.originalSize,
@@ -167,7 +169,7 @@ export async function GET(request: NextRequest) {
                     resource_type: "video"
                 });
                 
-                let videoResult = {
+                const videoResult = {
                     ...video,
                     compressionStatus: 'processing',
                     updated: false,
@@ -204,11 +206,12 @@ export async function GET(request: NextRequest) {
                 
                 results.push(videoResult);
                 
-            } catch (error:any) {
+            } catch (error:unknown) {
+                const err = error as Error; // Type assertion
                 results.push({
                     ...video,
                     compressionStatus: 'error',
-                    error: error.message,
+                    error: err.message,
                     updated: false
                 });
             }
@@ -222,12 +225,13 @@ export async function GET(request: NextRequest) {
             message: `Checked ${videos.length} videos, updated ${updatedCount} compression sizes`
         }, { status: 200 });
 
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Bulk check error:", error);
+        const err = error as Error; // Type assertion
         return NextResponse.json({
             success: false,
             error: "Failed to check videos",
-            detail: error.message || "Unknown error occurred"
+            detail: err.message || "Unknown error occurred"
         }, { status: 500 });
     } finally {
         await prisma.$disconnect();
